@@ -46,6 +46,7 @@ class OpenIssueCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        return 0;
         /** @var string $repositoryName */
         $repositoryName = $input->getArgument('repository');
         $repository = $this->repositoryProvider->getRepository($repositoryName);
