@@ -54,8 +54,9 @@ jobs:
 
       - name: Find reviwers
         run: |
+          MYDIR=`pwd`
           cd build/reviewer
-          ./git-reviewer.php find ${{ github.event.client_payload.pull_request_number }} `pwd`/build/target/${{ github.event.client_payload.repository }} \
+          ./git-reviewer.php find ${{ github.event.client_payload.pull_request_number }} $MYDIR/build/target/${{ github.event.client_payload.repository }} \
           --after `date +%Y-%m-%d --date="2 year ago"` \
           --ignore-path "src/Symfony/FrameworkBundle/*" \
           --ignore-path "src/Symfony/Bundle/FrameworkBundle/*" \
