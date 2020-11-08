@@ -40,7 +40,7 @@ jobs:
           key: nyholm-git-reviewer
 
       - name: Checkout GitReviewer repo
-        run: git clone https://github.com/Nyholm/git-reviewer reviewer
+        run: git clone https://github.com/Nyholm/git-reviewer build/reviewer
 
       - name: Download dependencies
         run: |
