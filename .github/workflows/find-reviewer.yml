@@ -68,12 +68,10 @@ jobs:
           git checkout ${{ steps.target-base.outputs.branch }}
 
       - name: Find reviwers
+        env:
+          GITHUB_TOKEN: ${{ secrets.CARSONPROD_GITHUB_TOKEN }}
         run: |
           cd build/reviewer
-          echo "Date: "
-          echo `date +%Y-%m-%d --date="2 year ago"`
-          echo "dir: "
-          echo ${{ steps.target-repo.outputs.dir }}
           ./git-reviewer.php find ${{ github.event.client_payload.pull_request_number }} ${{ steps.target-repo.outputs.dir }} \
           --after `date +%Y-%m-%d --date="2 year ago"` \
           --ignore-path "src/Symfony/FrameworkBundle/*" \
@@ -84,9 +82,7 @@ jobs:
 
           cat output.json
 
-
       - name: Write comment
-        run: |
-          bin/console app:review:suggest ${{ github.event.client_payload.repository }} ${{ github.event.client_payload.pull_request_number }} ${{ github.event.client_payload.type }} `pwd`/build/reviewer/output.json
-          cat `pwd`/build/reviewer/output.json
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.CARSONPROD_GITHUB_TOKEN }}
+        run: bin/console app:review:suggest ${{ github.event.client_payload.repository }} ${{ github.event.client_payload.pull_request_number }} ${{ github.event.client_payload.type }} `pwd`/build/reviewer/output.json
