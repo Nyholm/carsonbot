@@ -51,8 +51,21 @@ jobs:
         id: target-repo
         run: |
           git clone https://github.com/${{ github.event.client_payload.repository }} build/target/${{ github.event.client_payload.repository }}
-          cd build/target/${{ github.event.client_payload.repository }} && git pull && git checkout ${{ github.event.client_payload.base_branch }}
           echo "::set-output name=dir::$(pwd)/build/target/${{ github.event.client_payload.repository }}"
+
+      - name: Find branch base
+        id: target-base
+        run: |
+          cd build/reviewer
+          BASE=$(./git-reviewer.php pull-request:base ${{ github.event.client_payload.pull_request_number }} ${{ steps.target-repo.outputs.dir }})
+          echo "::set-output name=branch::$BASE"
+
+      - name: Checkout branch base
+        run: |
+          cd ${{ steps.target-repo.outputs.dir }}
+          echo ${{ steps.target-base.outputs.branch }}
+          git pull
+          git checkout ${{ steps.target-base.outputs.branch }}
 
       - name: Find reviwers
         run: |
