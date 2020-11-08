@@ -80,7 +80,7 @@ jobs:
           --ignore-path "src/Symfony/Bundle/FrameworkBundle/*" \
           --ignore-path "src/**/Tests/*" \
           --ignore-path CHANGELOG*.md \
-          --pretty-print
+          --pretty-print > output.json
 
           cat output.json
 
