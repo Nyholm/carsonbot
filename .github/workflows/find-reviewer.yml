@@ -40,7 +40,7 @@ jobs:
           key: nyholm-git-reviewer
 
       - name: Checkout GitReviewer repo
-        run: git clone hgit@github.com:Nyholm/git-reviewer.git build/reviewer
+        run: git clone https://github.com/Nyholm/git-reviewer build/reviewer
 
       - name: Download dependencies
         run: |
@@ -49,14 +49,16 @@ jobs:
 
       - name: Checkout target repo
         run: |
-          git clone git@github.com:${{ github.event.client_payload.repository }}.git build/target/${{ github.event.client_payload.repository }}
+          git clone https://github.com/${{ github.event.client_payload.repository }} build/target/${{ github.event.client_payload.repository }}
           cd build/target/${{ github.event.client_payload.repository }} && git pull && git checkout ${{ github.event.client_payload.base_branch }}
 
       - name: Find reviwers
         run: |
           MYDIR=`pwd`
           cd build/reviewer
-          ./git-reviewer.php find ${{ github.event.client_payload.pull_request_number }} $MYDIR/build/target/${{ github.event.client_payload.repository }} \
+          echo "dir: "
+          echo ${{ MYDIR }}/build/target/${{ github.event.client_payload.repository }}
+          ./git-reviewer.php find ${{ github.event.client_payload.pull_request_number }} ${{ MYDIR }}/build/target/${{ github.event.client_payload.repository }} \
           --after `date +%Y-%m-%d --date="2 year ago"` \
           --ignore-path "src/Symfony/FrameworkBundle/*" \
           --ignore-path "src/Symfony/Bundle/FrameworkBundle/*" \
