@@ -48,17 +48,18 @@ jobs:
           composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable
 
       - name: Checkout target repo
+        id: target-repo
         run: |
           git clone https://github.com/${{ github.event.client_payload.repository }} build/target/${{ github.event.client_payload.repository }}
           cd build/target/${{ github.event.client_payload.repository }} && git pull && git checkout ${{ github.event.client_payload.base_branch }}
+          run: echo "::set-output name=dir::$(pwd)/build/target/${{ github.event.client_payload.repository }}"
 
       - name: Find reviwers
         run: |
-          MYDIR=`pwd`
           cd build/reviewer
           echo "dir: "
-          echo ${{ MYDIR }}/build/target/${{ github.event.client_payload.repository }}
-          ./git-reviewer.php find ${{ github.event.client_payload.pull_request_number }} ${{ MYDIR }}/build/target/${{ github.event.client_payload.repository }} \
+          echo ${{ steps.target-repo.outputs.dir }}
+          ./git-reviewer.php find ${{ github.event.client_payload.pull_request_number }} ${{ steps.target-repo.outputs.dir }} \
           --after `date +%Y-%m-%d --date="2 year ago"` \
           --ignore-path "src/Symfony/FrameworkBundle/*" \
           --ignore-path "src/Symfony/Bundle/FrameworkBundle/*" \
