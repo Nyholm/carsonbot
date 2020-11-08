@@ -52,7 +52,7 @@ jobs:
         run: |
           git clone https://github.com/${{ github.event.client_payload.repository }} build/target/${{ github.event.client_payload.repository }}
           cd build/target/${{ github.event.client_payload.repository }} && git pull && git checkout ${{ github.event.client_payload.base_branch }}
-          run: echo "::set-output name=dir::$(pwd)/build/target/${{ github.event.client_payload.repository }}"
+          echo "::set-output name=dir::$(pwd)/build/target/${{ github.event.client_payload.repository }}"
 
       - name: Find reviwers
         run: |
