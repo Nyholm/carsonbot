@@ -16,6 +16,10 @@ jobs:
       - name: Create path
         run: mkdir -p build/reviewer
 
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
       - name: Cache dependencies
         uses: actions/cache@v2
         with:
@@ -33,8 +37,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: build/reviewer
-          key: composer-${{ runner.os }}-7.4-${{ hashFiles('composer.*') }}
-          # TODO fix this: What is a good key?
+          key: nyholm-git-reviewer
 
       - name: Checkout GitReviewer repo
         run: git clone https://github.com/Nyholm/git-reviewer reviewer
