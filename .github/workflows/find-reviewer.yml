@@ -50,7 +50,7 @@ jobs:
       - name: Checkout target repo
         run: |
           git clone https://github.com/${{ github.event.client_payload.repository }} build/target/${{ github.event.client_payload.repository }}
-          cd build/target/${{ github.event.client_payload.repository }} && git checkout ${{ github.event.client_payload.base_branch }}
+          cd build/target/${{ github.event.client_payload.repository }} && git pull && git checkout ${{ github.event.client_payload.base_branch }}
 
       - name: Find reviwers
         run: |
