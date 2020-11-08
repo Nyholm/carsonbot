@@ -85,4 +85,4 @@ jobs:
       - name: Write comment
         env:
           GITHUB_TOKEN: ${{ secrets.CARSONPROD_GITHUB_TOKEN }}
-        run: bin/console app:review:suggest ${{ github.event.client_payload.repository }} ${{ github.event.client_payload.pull_request_number }} ${{ github.event.client_payload.type }} `pwd`/build/reviewer/output.json
+        run: bin/console app:review:suggest ${{ github.event.client_payload.repository }} ${{ github.event.client_payload.pull_request_number }} ${{ github.event.client_payload.type }} `pwd`/build/reviewer/output.json || true
