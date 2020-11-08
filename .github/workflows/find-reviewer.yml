@@ -49,13 +49,13 @@ jobs:
 
       - name: Checkout target repo
         run: |
-          git clone https://github.com/${{ github.event.client_payload.repository }} build/target-source
-          cd build/target-source && git checkout ${{ github.event.client_payload.base_branch }}
+          git clone https://github.com/${{ github.event.client_payload.repository }} build/target/${{ github.event.client_payload.repository }}
+          cd build/target/${{ github.event.client_payload.repository }} && git checkout ${{ github.event.client_payload.base_branch }}
 
       - name: Find reviwers
         run: |
           cd build/reviewer
-          ./git-reviewer.php find ${{ github.event.client_payload.pull_request_number }} `pwd`/build/target-source \
+          ./git-reviewer.php find ${{ github.event.client_payload.pull_request_number }} `pwd`/build/target/${{ github.event.client_payload.repository }} \
           --after `date +%Y-%m-%d --date="2 year ago"` \
           --ignore-path "src/Symfony/FrameworkBundle/*" \
           --ignore-path "src/Symfony/Bundle/FrameworkBundle/*" \
