@@ -17,10 +17,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class OpenIssueCommand extends Command
+class SuggestReviewer extends Command
 {
-    private const TYPE_SUGGEST = 'suggest';
-    private const TYPE_DEMAND = 'demand';
+    public const TYPE_SUGGEST = 'suggest';
+    public const TYPE_DEMAND = 'demand';
     protected static $defaultName = 'app:review:suggest';
     private $issueApi;
     private $repositoryProvider;

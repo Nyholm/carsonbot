@@ -41,6 +41,8 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        bind:
+            string $botUsername: 'nyholm'
 
     App\:
         resource: '../src/*'
@@ -53,6 +55,10 @@ services:
     App\Subscriber\:
         resource: '../src/Subscriber/*'
         autoconfigure: false
+
+    Github\Api\Repo:
+        factory: ['@Github\Client', api]
+        arguments: [repo]
 
     Github\Api\Issue:
         factory: ['@Github\Client', api]
