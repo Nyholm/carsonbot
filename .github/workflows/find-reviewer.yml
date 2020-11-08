@@ -1,0 +1,68 @@
+name: Find Reviewer
+
+on:
+  repository_dispatch:
+    types: [find-reviewer]
+
+jobs:
+  find:
+    name: Search
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-7.4-${{ hashFiles('composer.*') }}
+          restore-keys: |
+            composer-${{ runner.os }}-7.4-
+            composer-${{ runner.os }}-
+            composer-
+
+      - name: Download dependencies
+        run: composer install --no-interaction --optimize-autoloader
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: build/reviewer
+          key: composer-${{ runner.os }}-7.4-${{ hashFiles('composer.*') }}
+          # TODO fix this: What is a good key?
+
+      - name: Checkout GitReviewer repo
+        run: |
+          mkdir -p build/reviewer
+          git clone https://github.com/Nyholm/git-reviewer reviewer
+
+      - name: Download dependencies
+        run: |
+          cd build/reviewer
+          composer update --no-interaction --prefer-dist --optimize-autoloader --prefer-stable
+
+      - name: Checkout target repo
+        run: |
+          git clone https://github.com/${{ github.event.client_payload.repository }} build/target-source
+          cd build/target-source && git checkout ${{ github.event.client_payload.base_branch }}
+
+      - name: Find reviwers
+        run: |
+          cd build/reviewer
+          ./git-reviewer.php find ${{ github.event.client_payload.pull_request_number }} `pwd`/build/target-source \
+          --after `date +%Y-%m-%d --date="2 year ago"` \
+          --ignore-path "src/Symfony/FrameworkBundle/*" \
+          --ignore-path "src/Symfony/Bundle/FrameworkBundle/*" \
+          --ignore-path "src/**/Tests/*" \
+          --ignore-path CHANGELOG*.md \
+          --pretty-print > output.json
+          cat output.json
+
+
+      - name: Write comment
+        run: |
+          bin/console app:review:suggest ${{ github.event.client_payload.repository }} ${{ github.event.client_payload.pull_request_number }} ${{ github.event.client_payload.type }} `pwd`/build/reviewer/output.json
+          cat `pwd`/build/reviewer/output.json
+
